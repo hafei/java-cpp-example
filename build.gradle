@@ -1,0 +1,38 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'net.java.dev.jna:jna:5.8.0'
+}
+
+application {
+    mainClass = 'com.example.Main'
+}
+
+task copyDll(type: Copy) {
+    from 'src/main/resources'
+    into 'build/resources/main'
+    include '*.dll'
+}
+
+processResources.dependsOn copyDll
+
+
+shadowJar {
+    archiveBaseName.set('java-cpp-example')
+    archiveVersion.set('1.0.0')
+    archiveClassifier.set('')
+    manifest {
+        attributes 'Main-Class': 'com.example.Main'
+    }
+//    from('build/resources/main') {
+//        include '*.dll'
+//    }
+}
